@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrevista por Competências — Líder Comercial</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c25;
+  --surface2: #1e2330;
+  --border: #262d3d;
+  --orange: #f97316;
+  --orange-dim: rgba(249,115,22,0.10);
+  --blue: #3b82f6;
+  --blue-dim: rgba(59,130,246,0.10);
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --dim: #4b5675;
+  --radius: 10px;
+  --font: 'Segoe UI', system-ui, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;padding-bottom:80px}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 32px;position:sticky;top:0;z-index:100}
+.header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.header-left h1{font-size:16px;font-weight:700;letter-spacing:-.3px}
+.header-left p{font-size:12px;color:var(--muted);margin-top:1px}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{width:180px;height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--orange);border-radius:99px;transition:width .4s ease;width:0%}
+.progress-label{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:32px 24px}
+
+/* CANDIDATE CARD */
+.candidate-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.candidate-card h2{grid-column:1/-1;font-size:11px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+.info-item{display:flex;flex-direction:column;gap:2px}
+.info-item .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.info-item .val{font-size:13.5px;font-weight:500}
+
+/* SECTION HEADER */
+.section{margin-bottom:40px}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.section-badge{padding:5px 13px;border-radius:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;white-space:nowrap}
+.badge-tech{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,130,246,.2)}
+.badge-soft{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(249,115,22,.2)}
+.section-title{font-size:15px;font-weight:700}
+.section-divider{flex:1;height:1px;background:var(--border)}
+
+/* COMPETENCY CARD — estrutura igual ao modelo da imagem */
+.comp-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;transition:border-color .2s}
+.comp-card.answered{border-color:rgba(249,115,22,.4)}
+
+/* cabeçalho da competência */
+.comp-head{display:flex;align-items:flex-start;gap:14px;padding:18px 20px 0}
+.comp-badge{min-width:42px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;letter-spacing:.04em;flex-shrink:0;margin-top:2px;background:var(--surface2);border:1px solid var(--border);color:var(--dim)}
+.comp-card.answered .comp-badge{background:var(--orange-dim);border-color:rgba(249,115,22,.35);color:var(--orange)}
+.comp-meta{flex:1}
+.comp-code{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px}
+.comp-card.answered .comp-code{color:var(--orange)}
+
+/* pergunta — fonte maior, destaque */
+.comp-question{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:10px}
+
+/* sondagem — caixa de fundo, igual ao modelo */
+.comp-probe{font-size:12.5px;color:var(--muted);font-style:italic;line-height:1.55;background:var(--surface2);border-left:3px solid var(--orange);padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:0}
+.comp-probe strong{color:var(--orange);font-style:normal;font-weight:700}
+
+/* opções */
+.comp-options{padding:14px 20px 14px 76px;display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;text-align:left;width:100%;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--orange);background:var(--orange-dim)}
+.opt.sel{border-color:var(--orange);background:var(--orange-dim)}
+.opt.sel .opt-num{background:var(--orange);color:#fff;border-color:var(--orange)}
+.opt-num{min-width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--dim);flex-shrink:0;margin-top:1px;transition:all .15s}
+.opt-txt{font-size:13.5px;color:var(--muted);line-height:1.45}
+.opt.sel .opt-txt{color:var(--text)}
+
+/* separador + anotações */
+.comp-sep{height:1px;background:var(--border);margin:0 20px}
+.comp-notes{padding:10px 20px 14px 76px}
+.notes-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:var(--font);font-size:13px;padding:8px 12px;resize:none;outline:none;transition:border-color .15s;min-height:50px}
+.notes-input:focus{border-color:var(--orange);color:var(--text)}
+.notes-input::placeholder{color:var(--dim)}
+.notes-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+
+/* VEREDITO */
+.verdict-section{margin-top:48px}
+.warn{display:none;padding:12px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:8px;color:#fca5a5;font-size:13px;margin-bottom:14px}
+.warn.on{display:block}
+.verdict-btn{display:block;width:100%;padding:18px;background:var(--orange);color:#fff;font-family:var(--font);font-size:15px;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;letter-spacing:.02em;transition:opacity .2s}
+.verdict-btn:hover{opacity:.88}
+
+.vbox{display:none;margin-top:24px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.vbox.on{display:block}
+
+.vtop{display:flex;align-items:center;gap:20px;padding:26px 28px}
+.vicon{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.vlabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.vname{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.vsub{font-size:13px;margin-top:3px;opacity:.8}
+
+.vscores{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:20px 28px;border-top:1px solid var(--border);background:var(--surface2)}
+.vscore-block{display:flex;flex-direction:column;gap:6px}
+.vscore-block .slabel{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em}
+.vscore-block .srow{display:flex;align-items:center;gap:8px}
+.vscore-block .sbar{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.vscore-block .sfill{height:100%;border-radius:99px}
+.vscore-block .sval{font-size:14px;font-weight:700;min-width:36px;text-align:right}
+
+.vdetail{padding:0 28px 24px;border-top:1px solid var(--border)}
+.vdetail h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:20px 0 10px}
+.drow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.drow:last-child{border-bottom:none}
+.did{min-width:38px;font-weight:800;font-size:11px;color:var(--dim)}
+.dname{flex:1;color:var(--muted)}
+.dbar{width:80px;height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.dfill{height:100%;border-radius:99px}
+.dpct{font-weight:700;min-width:36px;text-align:right;font-size:13px}
+.dstatus{font-size:11px;color:var(--dim);min-width:130px}
+
+.vbody{padding:24px 28px;display:flex;flex-direction:column;gap:20px;border-top:1px solid var(--border)}
+.vblock h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.vblock ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.vblock li{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;line-height:1.5}
+.vblock li::before{content:'';min-width:6px;height:6px;border-radius:50%;margin-top:7px;flex-shrink:0}
+.positives h4{color:var(--green)}
+.positives li::before{background:var(--green)}
+.attentions h4{color:var(--yellow)}
+.attentions li::before{background:var(--yellow)}
+
+.vrec{padding:18px 28px;border-top:1px solid var(--border);font-size:14px;line-height:1.65;color:var(--muted)}
+.vrec strong{color:var(--text)}
+
+.reset-btn{display:block;width:100%;margin-top:12px;padding:12px;background:transparent;border:1.5px solid var(--border);border-radius:var(--radius);color:var(--muted);font-family:var(--font);font-size:13px;cursor:pointer;transition:border-color .15s,color .15s}
+.reset-btn:hover{border-color:var(--muted);color:var(--text)}
+
+@media(max-width:640px){
+  .candidate-card{grid-template-columns:1fr 1fr}
+  .vscores{grid-template-columns:1fr}
+  .comp-options,.comp-notes{padding-left:20px}
+}
+.info-input{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13.5px;font-weight:500;padding:5px 10px;outline:none;width:100%;transition:border-color .15s}
+.info-input:focus{border-color:var(--orange)}
+.info-input::placeholder{color:var(--dim);font-weight:400}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <h1>Entrevista por Competências</h1>
+      <p>Entrevista por Competências</p>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="pgFill"></div></div>
+      <span class="progress-label" id="pgLabel">0 / 15</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- CANDIDATO -->
+  <div class="candidate-card">
+    <h2>Identificação do Candidato</h2>
+    <div class="info-item"><span class="lbl">Nome</span><input class="info-input" placeholder="Nome completo" /></div>
+    <div class="info-item"><span class="lbl">Cargo pretendido</span><input class="info-input" placeholder="Cargo" /></div>
+    <div class="info-item"><span class="lbl">Localização</span><input class="info-input" placeholder="Cidade, Estado" /></div>
+    <div class="info-item"><span class="lbl">Empresa atual</span><input class="info-input" placeholder="Empresa atual" /></div>
+    <div class="info-item"><span class="lbl">Experiência anterior</span><input class="info-input" placeholder="Empresas anteriores" /></div>
+    <div class="info-item"><span class="lbl">Formação</span><input class="info-input" placeholder="Curso · Ano" /></div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       BLOCO 1 · COMPETÊNCIAS TÉCNICAS
+  ════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-badge badge-tech">⚙ Bloco 1</span>
+      <span class="section-title">Competências Técnicas (Hard Skills)</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- T1 -->
+    <div class="comp-card" id="card-T1">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-T1">T1</div>
+        <div class="comp-meta">
+          <div class="comp-code">T1 · Gestão de CRM e Integridade de Dados</div>
+          <div class="comp-question">Olhando para a sua rotina prática nas empresas anteriores, conte-me sobre uma situação específica em que você identificou que os dados do pipeline estavam desatualizados e o que você fez ativamente, no detalhe, para auditar e corrigir aquele funil.</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Qual era o tamanho do desvio? Ele foi no detalhe milimétrico da linha ou delegou a limpeza? Como ele garantiu que o erro não se repetisse na semana?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('T1',0,this)"><span class="opt-num">0</span><span class="opt-txt">Demonstrou no exemplo que não dava importância ao CRM ou tratava a integridade dos dados como algo secundário na rotina.</span></button>
+        <button class="opt" onclick="pick('T1',1,this)"><span class="opt-num">1</span><span class="opt-txt">Demonstrou que corrigia o funil apenas de forma superficial ou em rituais muito espaçados, sem descer ao detalhe operacional.</span></button>
+        <button class="opt" onclick="pick('T1',2,this)"><span class="opt-num">2</span><span class="opt-txt">Provou que realizava auditorias e correções frequentes no pipeline, mantendo o controle das etapas do funil de vendas.</span></button>
+        <button class="opt" onclick="pick('T1',3,this)"><span class="opt-num">3</span><span class="opt-txt">Evidenciou total domínio do acompanhamento cirúrgico e analítico; limpou o funil no detalhe mais minucioso e implementou rituais diários rígidos para blindar a integridade total dos dados.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-T1"></textarea></div>
+    </div>
+
+    <!-- T2 -->
+    <div class="comp-card" id="card-T2">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-T2">T2</div>
+        <div class="comp-meta">
+          <div class="comp-code">T2 · Análise e Gestão de Precisão de Indicadores (KPIs)</div>
+          <div class="comp-question">Traga o exemplo de um período específico na Dell em que as vendas estavam abaixo do esperado e você teve que destrinchar seus micro-indicadores operacionais (como cliques, ligações e tempo falado) para diagnosticar onde estava o erro. Como foi essa análise?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele buscou entender o dado de esforço puro ou ficou na métrica macro de vaidade? Ele gosta desse nível de microgerenciamento por dados?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('T2',0,this)"><span class="opt-num">0</span><span class="opt-txt">Demonstrou no histórico que preferia olhar apenas para a meta final de faturamento, ignorando ou rejeitando a análise detalhada de esforço diário.</span></button>
+        <button class="opt" onclick="pick('T2',1,this)"><span class="opt-num">1</span><span class="opt-txt">Analisou apenas indicadores básicos de conversão final, sem descer ao nível de avaliar o comportamento analítico e a volumetria de micro-atividades diárias.</span></button>
+        <button class="opt" onclick="pick('T2',2,this)"><span class="opt-num">2</span><span class="opt-txt">Utilizou os micro-indicadores de esforço de forma estruturada para recalcular sua própria rota e corrigir desvios na abordagem.</span></button>
+        <button class="opt" onclick="pick('T2',3,this)"><span class="opt-num">3</span><span class="opt-txt">Demonstrou total segurança na cultura de microgerenciamento por dados; rastreou métricas minuciosas de atividade operacional e usou esse diagnóstico cirúrgico para dar ritmo e reverter o resultado.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-T2"></textarea></div>
+    </div>
+
+    <!-- T3 -->
+    <div class="comp-card" id="card-T3">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-T3">T3</div>
+        <div class="comp-meta">
+          <div class="comp-code">T3 · Metodologias de Vendas de Alta Cadência</div>
+          <div class="comp-question">Relembre uma negociação de ciclo muito curto na sua carreira em que o cliente estava irredutível e você precisou aplicar uma técnica específica de Spin Selling ou Challenger Sale para acelerar o fechamento. Como foi a aplicação prática do método?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Como ele mapeou as dores rápido? Ele demonstrou domínio técnico da metodologia ou fechou a venda puramente no "feeling" e carisma?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('T3',0,this)"><span class="opt-num">0</span><span class="opt-txt">Revelou que nas vendas rápidas não utilizava metodologias estruturadas, dependendo apenas de improviso ou de apelos genéricos de preço.</span></button>
+        <button class="opt" onclick="pick('T3',1,this)"><span class="opt-num">1</span><span class="opt-txt">Aplicou a técnica de forma intuitiva e isolada para resolver aquela venda específica, mas sem demonstrar clareza processual do método.</span></button>
+        <button class="opt" onclick="pick('T3',2,this)"><span class="opt-num">2</span><span class="opt-txt">Demonstrou aplicação clara das etapas da metodologia em ciclos curtos de fechamento rápido, mapeando dores com precisão.</span></button>
+        <button class="opt" onclick="pick('T3',3,this)"><span class="opt-num">3</span><span class="opt-txt">Desestruturou a metodologia de forma cirúrgica na situação; dominou ganchos de contorno de objeção sob alta cadência e provou que sabe auditar e replicar esse processo de forma padronizada.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-T3"></textarea></div>
+    </div>
+
+    <!-- T4 -->
+    <div class="comp-card" id="card-T4">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-T4">T4</div>
+        <div class="comp-meta">
+          <div class="comp-code">T4 · Prospecção Integrada (Inbound e Outbound)</div>
+          <div class="comp-question">Conte sobre uma fase na sua trajetória em que você tinha leads agendados ou carteira ativa, mas escolheu manter uma rotina de prospecção fria (Outbound Hunter) em paralelo. Como você dividia o seu tempo?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele se acomodou com os leads prontos? Como controlava o volume de ligações frias para não deixar a prospecção ativa esfriar?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('T4',0,this)"><span class="opt-num">0</span><span class="opt-txt">Demonstrou que abandonou a prospecção fria assim que teve acesso a leads prontos ou carteiras administradas.</span></button>
+        <button class="opt" onclick="pick('T4',1,this)"><span class="opt-num">1</span><span class="opt-txt">Manteve os dois canais rodando, mas de forma desorganizada, sem métricas diárias de esforço para garantir o volume de outbound.</span></button>
+        <button class="opt" onclick="pick('T4',2,this)"><span class="opt-num">2</span><span class="opt-txt">Dividiu sua agenda em blocos de tempo claros e cumpriu a cota diária de ligações ativas independentemente do fluxo de leads inbound.</span></button>
+        <button class="opt" onclick="pick('T4',3,this)"><span class="opt-num">3</span><span class="opt-txt">Estruturou uma esteira de intensidade; controlou as taxas de conversão de ponta a ponta e manteve um volume de contatos frios com disciplina.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-T4"></textarea></div>
+    </div>
+
+    <!-- T5 -->
+    <div class="comp-card" id="card-T5">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-T5">T5</div>
+        <div class="comp-meta">
+          <div class="comp-code">T5 · Venda de Soluções de Inteligência de Dados</div>
+          <div class="comp-question">Na sua passagem pela CDL ou Dell, qual foi a venda mais complexa que você realizou para uma empresa? Como você traduziu esses dados invisíveis em retorno financeiro (ROI) para o cliente?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele usou relatórios detalhados ou análises financeiras na mesa? Como tangibilizou o valor do produto de forma analítica?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('T5',0,this)"><span class="opt-num">0</span><span class="opt-txt">Explicou a venda de forma genérica ou conceitual, sem conectar o produto a dados técnicos ou a indicadores de negócio do cliente.</span></button>
+        <button class="opt" onclick="pick('T5',1,this)"><span class="opt-num">1</span><span class="opt-txt">Conhecia o valor dos dados, mas baseou o pitch de fechamento em argumentos de relacionamento, sem estruturar uma projeção financeira de retorno.</span></button>
+        <button class="opt" onclick="pick('T5',2,this)"><span class="opt-num">2</span><span class="opt-txt">Conseguiu desenhar o cenário de dores do cliente tradicional e provou o valor da solução focando no retorno sobre o investimento.</span></button>
+        <button class="opt" onclick="pick('T5',3,this)"><span class="opt-num">3</span><span class="opt-txt">Conectou inteligência de dados a ganchos de crescimento financeiro previsível; manipulou ferramentas detalhadas de segmentação/análise e criou uma narrativa técnica irresistível de alta conversão.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-T5"></textarea></div>
+    </div>
+
+  </div><!-- /bloco técnico -->
+
+  <!-- ════════════════════════════════════════
+       BLOCO 2 · COMPETÊNCIAS COMPORTAMENTAIS
+  ════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-badge badge-soft">◈ Bloco 2</span>
+      <span class="section-title">Competências Comportamentais (Soft Skills)</span>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- C1 -->
+    <div class="comp-card" id="card-C1">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C1">C1</div>
+        <div class="comp-meta">
+          <div class="comp-code">C1 · Transição para Liderança Operacional</div>
+          <div class="comp-question">Conte-me sobre um momento na Dell ou OLX em que você percebeu um colega falhando nos processos e, por iniciativa própria, decidiu intervir, auditar o que ele fazia e cobrá-lo para recuperar o ritmo.</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele se omitiu por não ser o chefe formal? Ele focou em corrigir a engrenagem e o método do colega ou tentou apenas dar apoio motivacional básico?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C1',0,this)"><span class="opt-num">0</span><span class="opt-txt">Omitiu-se completamente na situação, demonstrando que só se importava com a própria meta individual e ignorava o processo coletivo.</span></button>
+        <button class="opt" onclick="pick('C1',1,this)"><span class="opt-num">1</span><span class="opt-txt">Tentou ajudar o colega de forma amigável e superficial, mas sem auditar os dados operacionais ou fazer cobranças firmes por disciplina.</span></button>
+        <button class="opt" onclick="pick('C1',2,this)"><span class="opt-num">2</span><span class="opt-txt">Assumiu uma postura de liderança informal, analisou os erros de processo do colega e o direcionou com base nas metas da operação.</span></button>
+        <button class="opt" onclick="pick('C1',3,this)"><span class="opt-num">3</span><span class="opt-txt">Tomou para si a responsabilidade pela engrenagem; destrinchou o gargalo técnico do par, ensinou o método correto e provou que sua energia é voltada a fazer a engrenagem operacional performar.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C1"></textarea></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="comp-card" id="card-C2">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C2">C2</div>
+        <div class="comp-meta">
+          <div class="comp-code">C2 · Liderança pelo Exemplo e Repertório Comercial</div>
+          <div class="comp-question">Conte sobre o seu início na OLX ou quando mudou de célula na Dell. Como foi o seu processo prático para ir para a linha de frente, dominar a nova esteira de vendas rapidamente e provar para os outros, através do seu resultado, que o método funcionava?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele pegou no telefone exaustivamente no início para fixar o método? Ele valoriza a prática de ir para o "campo" para construir propriedade e autoridade moral?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C2',0,this)"><span class="opt-num">0</span><span class="opt-txt">Demonstrou que preferiu estudar a teoria de forma lenta ou esperou que as ferramentas estivessem perfeitas antes de realizar as primeiras ligações.</span></button>
+        <button class="opt" onclick="pick('C2',1,this)"><span class="opt-num">1</span><span class="opt-txt">Começou a operar a esteira de forma morna, demorando para atingir a constância necessária para validar o processo comercial.</span></button>
+        <button class="opt" onclick="pick('C2',2,this)"><span class="opt-num">2</span><span class="opt-txt">Dedicou-se a executar o volume de vendas necessário no início para entender o produto e atingir os primeiros resultados práticos.</span></button>
+        <button class="opt" onclick="pick('C2',3,this)"><span class="opt-num">3</span><span class="opt-txt">Demonstrou perfil totalmente "hands-on" (mão na massa); mergulhou na operação mais intensa, testou o pitch à exaustão no telefone para fixar o método e usou essa propriedade prática para validar que a meta era perfeitamente atingível.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C2"></textarea></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="comp-card" id="card-C3">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C3">C3</div>
+        <div class="comp-meta">
+          <div class="comp-code">C3 · Disciplina, Cobrança e Ritmo Diário</div>
+          <div class="comp-question">Quem foi a sua maior referência de disciplina na sua infância ou juventude? Conte uma história real de como essa pessoa te cobrava no dia a dia e como você trouxe essa intensidade e senso de urgência para a sua rotina de trabalho.</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Havia regras claras e cobrança por tarefas em casa? Ele associa a cobrança firme a algo positivo que gera excelência ou a um peso desconfortável?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C3',0,this)"><span class="opt-num">0</span><span class="opt-txt">Não conseguiu trazer referências de disciplina rígida ou demonstrou que prefere agir em ambientes sem rotinas de cobrança frequente.</span></button>
+        <button class="opt" onclick="pick('C3',1,this)"><span class="opt-num">1</span><span class="opt-txt">Lembrou de cobranças pontuais, mas demonstrou que na sua prática profissional prefere um ritmo mais flexível e sem acompanhamento minucioso do dia.</span></button>
+        <button class="opt" onclick="pick('C3',2,this)"><span class="opt-num">2</span><span class="opt-txt">Validou a importância da disciplina rígida que recebeu e demonstrou que aplica rituais claros de organização em suas metas diárias.</span></button>
+        <button class="opt" onclick="pick('C3',3,this)"><span class="opt-num">3</span><span class="opt-txt">Trouxe uma referência vívida e poderosa de cobrança e conectou esse padrão a uma rotina profissional de alta performance com rituais diários inegociáveis.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C3"></textarea></div>
+    </div>
+
+    <!-- C4 — FIT STARTUP (sem código C no documento, usamos C4) -->
+    <div class="comp-card" id="card-C4">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C4">C4</div>
+        <div class="comp-meta">
+          <div class="comp-code">C4 · Fit Cultural — Startup e Alta Ambiguidade</div>
+          <div class="comp-question">Na Dell e OLX você tinha estrutura, processos e marca. Na Rankey, é uma startup com 21 pessoas. O que muda na sua forma de trabalhar? O que você perderia e o que ganharia?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Tem consciência das diferenças? Romantiza startup ou é realista?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C4',0,this)"><span class="opt-num">0</span><span class="opt-txt">Romantiza o ambiente de startup ou demonstra dependência de estrutura.</span></button>
+        <button class="opt" onclick="pick('C4',1,this)"><span class="opt-num">1</span><span class="opt-txt">Reconhece diferenças mas não demonstra clareza sobre o que exige de si mesmo.</span></button>
+        <button class="opt" onclick="pick('C4',2,this)"><span class="opt-num">2</span><span class="opt-txt">Visão realista das diferenças com disposição genuína para se adaptar.</span></button>
+        <button class="opt" onclick="pick('C4',3,this)"><span class="opt-num">3</span><span class="opt-txt">Alta consciência situacional, relata adaptação prévia e clareza sobre o que entrega em ambiente de alta ambiguidade.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C4"></textarea></div>
+    </div>
+
+    <!-- C5 — AUTONOMIA E INICIATIVA -->
+    <div class="comp-card" id="card-C5">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C5">C5</div>
+        <div class="comp-meta">
+          <div class="comp-code">C5 · Autonomia e Iniciativa</div>
+          <div class="comp-question">Me dê um exemplo em que você identificou uma oportunidade que ninguém havia visto e tomou a iniciativa de executar. O que aconteceu?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> A ideia foi dele? Executou sem pedir permissão? Qual resultado?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C5',0,this)"><span class="opt-num">0</span><span class="opt-txt">Exemplo inexistente ou de baixo impacto onde aguardou direcionamento.</span></button>
+        <button class="opt" onclick="pick('C5',1,this)"><span class="opt-num">1</span><span class="opt-txt">Tem iniciativa mas depende de validação antes de agir.</span></button>
+        <button class="opt" onclick="pick('C5',2,this)"><span class="opt-num">2</span><span class="opt-txt">Demonstra iniciativa real com execução autônoma e resultado positivo.</span></button>
+        <button class="opt" onclick="pick('C5',3,this)"><span class="opt-num">3</span><span class="opt-txt">Iniciativa de alto impacto com execução independente, influência nos pares e resultado mensurável.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C5"></textarea></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="comp-card" id="card-C12">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C12">C12</div>
+        <div class="comp-meta">
+          <div class="comp-code">C12 · Motor Cognitivo e Ambição Financeira (Vivência de Escassez ou Superação)</div>
+          <div class="comp-question">Se você pudesse escolher um momento da sua infância ou juventude que definiu a sua relação com o dinheiro e o seu desejo de vencer, qual seria? Conte a história do que aconteceu e como isso molda a sua fome por resultados hoje.</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> O que o dinheiro representa para ele? Ele superou algum momento difícil na família? A ambição dele vem de uma promessa pessoal ou de um padrão de conforto?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C12',0,this)"><span class="opt-num">0</span><span class="opt-txt">Mostra uma relação passiva com conquistas financeiras; não conecta sua história pessoal a uma busca agressiva por prosperidade ou superação.</span></button>
+        <button class="opt" onclick="pick('C12',1,this)"><span class="opt-num">1</span><span class="opt-txt">Lembra de momentos de aperto, mas fala disso com foco no conforto e estabilidade, demonstrando receio em correr riscos por grandes comissões.</span></button>
+        <button class="opt" onclick="pick('C12',2,this)"><span class="opt-num">2</span><span class="opt-txt">Demonstra que aprendeu cedo o valor do esforço e usa suas memórias como combustível para bater metas e garantir uma boa remuneração.</span></button>
+        <button class="opt" onclick="pick('C12',3,this)"><span class="opt-num">3</span><span class="opt-txt">Revela um motor de ambição inabalável moldado no passado; enxerga o trabalho com metas agressivas como o único veículo aceitável para o nível de sucesso e reconhecimento que determinou para a sua vida.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C12"></textarea></div>
+    </div>
+
+    <!-- C13 -->
+    <div class="comp-card" id="card-C13">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C13">C13</div>
+        <div class="comp-meta">
+          <div class="comp-code">C13 · Rigor Emocional e Superação de Frustrações (Resiliência de Vida)</div>
+          <div class="comp-question">Fora do ambiente de trabalho, qual foi a maior rasteira ou imprevisto que a vida te deu (doença, perda, mudança forçada ou crise familiar) onde o plano desmoronou? Como você reagiu nos dias seguintes e o que fez, na prática, para reerguer a situação?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Quanto tempo ele passou se lamentando? Ele assumiu a responsabilidade pela virada ou se colocou no papel de vítima das circunstâncias?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C13',0,this)"><span class="opt-num">0</span><span class="opt-txt">Demonstra que desaba emocionalmente diante de crises ou que dependeu totalmente de terceiros para empurrá-lo para fora do problema.</span></button>
+        <button class="opt" onclick="pick('C13',1,this)"><span class="opt-num">1</span><span class="opt-txt">Absorveu o impacto, mas revelou que demorou muito tempo para reagir, deixando que o desânimo afetasse suas outras obrigações diárias.</span></button>
+        <button class="opt" onclick="pick('C13',2,this)"><span class="opt-num">2</span><span class="opt-txt">Enfrentou o problema com maturidade, reorganizou sua rotina pessoal e resolveu a situação de forma prática e resiliente.</span></button>
+        <button class="opt" onclick="pick('C13',3,this)"><span class="opt-num">3</span><span class="opt-txt">Reagiu com foco cirúrgico e pragmatismo imediato; transformou o caos em combustível, liderou as pessoas ao seu redor na crise e provou ter um estômago blindado para lidar com pressões extremas.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C13"></textarea></div>
+    </div>
+
+    <!-- C14 -->
+    <div class="comp-card" id="card-C14">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C14">C14</div>
+        <div class="comp-meta">
+          <div class="comp-code">C14 · Formação de Caráter, Senso de Dever e Ética (Integridade Extrema)</div>
+          <div class="comp-question">Pense na pessoa da sua família ou criação a quem você deve o seu caráter e os seus valores fundamentais. Conte uma história de quando essa pessoa te deu uma lição dura sobre integridade.</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Qual é o limite ético dele? Ele tolera "pequenos deslizes" processuais para se safar de uma cobrança? Quem é o juiz interno dele?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C14',0,this)"><span class="opt-num">0</span><span class="opt-txt">Traz exemplos superficiais ou confusos sobre valores, indicando que aceitaria flexibilizar regras ou omitir dados para evitar desgastes.</span></button>
+        <button class="opt" onclick="pick('C14',1,this)"><span class="opt-num">1</span><span class="opt-txt">Valoriza a honestidade, mas demonstra uma postura maleável, onde o processo ou a integridade dos dados podem ser deixados de lado se o resultado final de curto prazo parecer bom.</span></button>
+        <button class="opt" onclick="pick('C14',2,this)"><span class="opt-num">2</span><span class="opt-txt">Demonstra forte apego aos princípios que recebeu e mantém sua palavra e integridade nas entregas diárias da operação.</span></button>
+        <button class="opt" onclick="pick('C14',3,this)"><span class="opt-num">3</span><span class="opt-txt">Possui um senso de dever inegociável moldado na sua base familiar; coloca a verdade, o cumprimento cego das regras da engrenagem e a integridade da operação acima de qualquer facilidade ou ganho imediato.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C14"></textarea></div>
+    </div>
+
+    <!-- C15 -->
+    <div class="comp-card" id="card-C15">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C15">C15</div>
+        <div class="comp-meta">
+          <div class="comp-code">C15 · Competitividade e Aversão à Mediocridade (Ritmo de Alta Performance)</div>
+          <div class="comp-question">Seja no esporte, nos estudos ou em um hobby da juventude, conte-me sobre uma competição ou desafio pessoal onde você se recusou a aceitar o segundo lugar ou a média. O que você fez nos bastidores (em horas de treino e dedicação) para garantir o topo?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele é genuinamente competitivo? Ele fica incomodado com a média? Ele tem disciplina silenciosa de treino/execução quando não há supervisão?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C15',0,this)"><span class="opt-num">0</span><span class="opt-txt">Demonstra um perfil acomodado; encara competições com a mentalidade de que "o importante é competir", sem incômodo com a mediocridade.</span></button>
+        <button class="opt" onclick="pick('C15',1,this)"><span class="opt-num">1</span><span class="opt-txt">Gosta de vencer, mas não demonstrou no exemplo uma rotina de sacrifício ou intensidade nos bastidores para construir essa vitória.</span></button>
+        <button class="opt" onclick="pick('C15',2,this)"><span class="opt-num">2</span><span class="opt-txt">Apresenta histórico de dedicação e foco em performance, mostrando que estuda e se prepara para entregar bons resultados acima da média.</span></button>
+        <button class="opt" onclick="pick('C15',3,this)"><span class="opt-num">3</span><span class="opt-txt">Possui uma mentalidade obsessiva por excelência; detalhou uma rotina intensa de preparação e provou que é guiado por um incômodo profundo com a média, aplicando essa mesma energia na linha de frente do time.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C15"></textarea></div>
+    </div>
+
+    <!-- C16 -->
+    <div class="comp-card" id="card-C16">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C16">C16</div>
+        <div class="comp-meta">
+          <div class="comp-code">C16 · Capacidade de Desenvolver Pessoas (Estilo Coach / Educador)</div>
+          <div class="comp-question">Ao longo da sua vida (pode ser com amigos, irmãos mais novos ou colegas), conte sobre uma situação em que você pegou alguém que estava completamente perdido, sem ritmo ou prestes a desistir de algo importante, e assumiu a responsabilidade de treinar e cobrar essa pessoa até ela vencer.</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Como foi a abordagem dele? Ele teve paciência para ensinar o método detalhado, mas manteve a firmeza na cobrança? Ele se orgulha do sucesso dos outros?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C16',0,this)"><span class="opt-num">0</span><span class="opt-txt">Nunca se envolveu no desenvolvimento de ninguém ou demonstrou impaciência com o tempo de aprendizado e evolução dos outros.</span></button>
+        <button class="opt" onclick="pick('C16',1,this)"><span class="opt-num">1</span><span class="opt-txt">Tentou ajudar dando conselhos motivacionais rasos, mas sem sentar ao lado para auditar os erros operacionais ou desenhar um plano de ação real.</span></button>
+        <button class="opt" onclick="pick('C16',2,this)"><span class="opt-num">2</span><span class="opt-txt">Demonstrou capacidade de ensinar tarefas básicas e acompanhar o progresso de um liderado ou par de forma estruturada.</span></button>
+        <button class="opt" onclick="pick('C16',3,this)"><span class="opt-num">3</span><span class="opt-txt">Evidenciou o verdadeiro perfil de líder educador; uniu a gestão de alta proximidade à empatia, destrinchou o método em passos simples, cobrou evolução diária com firmeza e vibrou genuinamente com a transformação e a receita gerada pelo outro.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C16"></textarea></div>
+    </div>
+
+    <!-- C17 -->
+    <div class="comp-card" id="card-C17">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C17">C17</div>
+        <div class="comp-meta">
+          <div class="comp-code">C17 · Ambição Financeira e Fome de Ganho (Potencial Tração)</div>
+          <div class="comp-question">Pensando no seu futuro, qual é a sua meta financeira mais agressiva para os próximos 3 a 5 anos e qual foi o maior sacrifício ou decisão ousada que você já tomou no passado para acelerar um ganho financeiro expressivo?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> O plano dele é agressivo? A ambição é nítida ou ele se contenta com o teto da média? Ele tem coragem de arriscar o conforto por um ganho muito maior?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C17',0,this)"><span class="opt-num">0</span><span class="opt-txt">Demonstra metas financeiras tímidas ou passivas; busca estabilidade e prefere evitar riscos ou grandes esforços por dinheiro.</span></button>
+        <button class="opt" onclick="pick('C17',1,this)"><span class="opt-num">1</span><span class="opt-txt">Tem desejos de consumo, mas prefere a segurança de um ganho fixo previsível e confortável, sem planos agressivos de escala ou foco em supermeta.</span></button>
+        <button class="opt" onclick="pick('C17',2,this)"><span class="opt-num">2</span><span class="opt-txt">Possui metas claras de crescimento financeiro e já tomou decisões focadas em aumentar sua remuneração através de metas e comissões.</span></button>
+        <button class="opt" onclick="pick('C17',3,this)"><span class="opt-num">3</span><span class="opt-txt">Ambição extrema e agressiva; enxerga o comissionamento variável e agressivo como o único caminho aceitável e planeja sua vida em torno de um crescimento financeiro exponencial baseado estritamente na sua performance.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C17"></textarea></div>
+    </div>
+
+    <!-- C18 -->
+    <div class="comp-card" id="card-C18">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-C18">C18</div>
+        <div class="comp-meta">
+          <div class="comp-code">C18 · Histórico de Construção e Patrimônio (Senso de Valor do Suor)</div>
+          <div class="comp-question">Olhando para a sua trajetória, qual foi a primeira grande conquista material ou patrimonial (casa, carro, investimento, empresa) que você construiu do zero com o dinheiro do seu próprio trabalho? Me conte a história de como foi o processo de economia, foco e renúncia para fazer isso acontecer.</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele construiu algo concreto com o próprio esforço ou dependeu de facilidades? Ele tem orgulho de ter erguido o próprio patrimônio? Demonstra disciplina de longo prazo?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('C18',0,this)"><span class="opt-num">0</span><span class="opt-txt">Não construiu nada relevante com o próprio esforço até o momento ou demonstra desorganização financeira crônica.</span></button>
+        <button class="opt" onclick="pick('C18',1,this)"><span class="opt-num">1</span><span class="opt-txt">Conquistou bens básicos, mas de forma passiva ou com forte ajuda/herança externa, sem um histórico claro de sacrifício, foco e planejamento pessoal de longo prazo.</span></button>
+        <button class="opt" onclick="pick('C18',2,this)"><span class="opt-num">2</span><span class="opt-txt">Conquistou patrimônio relevante fruto direto do seu trabalho e de um planejamento financeiro estruturado ao longo dos anos.</span></button>
+        <button class="opt" onclick="pick('C18',3,this)"><span class="opt-num">3</span><span class="opt-txt">Histórico sólido e orgulhoso de construção própria do zero; detalhou um processo rigoroso de renúncia, foco obsessivo e disciplina de longo prazo para erguer seu patrimônio, provando que sabe exatamente o valor do suor e da meritocracia.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-C18"></textarea></div>
+    </div>
+
+    <!-- CB — CRIATIVIDADE / BOOTSTRAP -->
+    <div class="comp-card" id="card-CB">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-CB">CB</div>
+        <div class="comp-meta">
+          <div class="comp-code">CB · Criatividade e Resolução de Problemas com Escassez (Mentalidade Bootstrap / Startup)</div>
+          <div class="comp-question">Pense em um momento da sua juventude em que você queria muito realizar um projeto, uma viagem ou comprar algo importante, mas a sua família não tinha nenhum recurso financeiro ou estrutura para te apoiar. Como você usou a sua iniciativa prática e autonomia para levantar os recursos e executar o plano do zero?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> Ele recuou diante da falta de meios? Ele dependeu de favores ou criou uma micro-engrenagem prática e independente de execução?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('CB',0,this)"><span class="opt-num">0</span><span class="opt-txt"><strong>Subdesenvolvida (10–25%):</strong> Desistia do objetivo ou mudava de plano assim que percebia que as condições não eram ideais, previsíveis ou confortáveis.</span></button>
+        <button class="opt" onclick="pick('CB',1,this)"><span class="opt-num">1</span><span class="opt-txt"><strong>Em Desenvolvimento (26–50%):</strong> Dependia de ajuda, concessões ou suporte direto de terceiros para conseguir resolver o problema da falta de recursos por ele.</span></button>
+        <button class="opt" onclick="pick('CB',2,this)"><span class="opt-num">2</span><span class="opt-txt"><strong>Desenvolvida (51–75%):</strong> Teve proatividade para realizar pequenos trabalhos honestos ou economias rígidas, atingindo o objetivo individual com esforço próprio.</span></button>
+        <button class="opt" onclick="pick('CB',3,this)"><span class="opt-num">3</span><span class="opt-txt"><strong>Excelente (76–100%):</strong> Demonstrou forte senso de dono e visão sistêmica desde cedo; desenhou uma estratégia detalhada, mobilizou recursos do zero de forma independente e executou o plano com precisão e controle.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-CB"></textarea></div>
+    </div>
+
+    <!-- LI — LIDERANÇA POR INFLUÊNCIA -->
+    <div class="comp-card" id="card-LI">
+      <div class="comp-head">
+        <div class="comp-badge" id="badge-LI">LI</div>
+        <div class="comp-meta">
+          <div class="comp-code">LI · Liderança por Influência e Persuasão de Pares (Sem Autoridade Formal na Juventude)</div>
+          <div class="comp-question">Relembre uma situação na sua adolescência em que você teve uma ideia ousada (organizar um evento, mudar uma regra do colégio ou iniciar um movimento) e precisou usar estritamente a sua comunicação e persuasão para convencer os seus amigos a te seguirem, mesmo quando o plano parecia difícil ou arriscado. Como você os convenceu?</div>
+          <div class="comp-probe"><strong>Sondagem:</strong> As pessoas o seguiam naturalmente pelo argumento e exemplo? Como ele quebrava a resistência e o medo dos colegas?</div>
+        </div>
+      </div>
+      <div class="comp-options">
+        <button class="opt" onclick="pick('LI',0,this)"><span class="opt-num">0</span><span class="opt-txt"><strong>Subdesenvolvida (10–25%):</strong> Sempre adotou uma postura de seguidor das ideias alheias, preferindo o conforto de não se expor ou influenciar o comportamento do grupo.</span></button>
+        <button class="opt" onclick="pick('LI',1,this)"><span class="opt-num">1</span><span class="opt-txt"><strong>Em Desenvolvimento (26–50%):</strong> Tinha boas intenções e ideias, mas não conseguia transmiti-las com clareza ou recuava ao primeiro sinal de rejeição ou dúvida dos amigos.</span></button>
+        <button class="opt" onclick="pick('LI',2,this)"><span class="opt-num">2</span><span class="opt-txt"><strong>Desenvolvida (51–75%):</strong> Conseguia engajar as pessoas mais próximas através de conversas individuais, argumentos lógicos e bom relacionamento.</span></button>
+        <button class="opt" onclick="pick('LI',3,this)"><span class="opt-num">3</span><span class="opt-txt"><strong>Excelente (76–100%):</strong> Liderança e magnetismo prático natural; utilizava comunicação estratégica, lia o comportamento dos pares, desarmava as objeções no detalhe e criava um senso de urgência que fazia as pessoas agirem sob a sua direção técnica.</span></button>
+      </div>
+      <div class="comp-sep"></div>
+      <div class="comp-notes"><div class="notes-label">Anotações</div><textarea class="notes-input" placeholder="Registre pontos relevantes da resposta…" id="note-LI"></textarea></div>
+    </div>
+
+  </div><!-- /bloco comportamental -->
+
+  <!-- ── VEREDITO ── -->
+  <div class="verdict-section">
+    <div class="warn" id="warn">⚠ Responda todas as competências antes de gerar o veredito.</div>
+    <button class="verdict-btn" onclick="gerar()">Gerar Veredito Final</button>
+    <div class="vbox" id="vbox"></div>
+    <button class="reset-btn" onclick="resetar()">↺ Reiniciar entrevista</button>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ── CONFIGURAÇÃO ──
+const KEYS  = ['T1','T2','T3','T4','T5','C1','C2','C3','C4','C5','C12','C13','C14','C15','C16','C17','C18','CB','LI'];
+const TOTAL = KEYS.length; // 19
+const TECH  = ['T1','T2','T3','T4','T5'];
+const SOFT  = ['C1','C2','C3','C4','C5','C12','C13','C14','C15','C16','C17','C18','CB','LI'];
+
+// Matriz de conversão conforme documento: 0→17%, 1→38%, 2→63%, 3→88%
+const PCT = {0:17, 1:38, 2:63, 3:88};
+const STATUS = ['🔴 Subdesenvolvida','🟡 Em Desenvolvimento','🟢 Desenvolvida','🔵 Excelente'];
+const SCOLOR = ['#ef4444','#eab308','#22c55e','#3b82f6'];
+
+const NOMES = {
+  T1:'Gestão de CRM e Integridade de Dados',
+  T2:'Análise e Gestão de Precisão de KPIs',
+  T3:'Metodologias de Vendas de Alta Cadência',
+  T4:'Prospecção Integrada (Inbound e Outbound)',
+  T5:'Venda de Soluções de Inteligência de Dados',
+  C1:'Transição para Liderança Operacional',
+  C2:'Liderança pelo Exemplo e Repertório Comercial',
+  C3:'Disciplina, Cobrança e Ritmo Diário',
+  C4:'Fit Cultural — Startup e Alta Ambiguidade',
+  C5:'Autonomia e Iniciativa',
+  C12:'Motor Cognitivo e Ambição Financeira',
+  C13:'Rigor Emocional e Superação de Frustrações',
+  C14:'Formação de Caráter, Senso de Dever e Ética',
+  C15:'Competitividade e Aversão à Mediocridade',
+  C16:'Capacidade de Desenvolver Pessoas',
+  C17:'Ambição Financeira e Fome de Ganho',
+  C18:'Histórico de Construção e Patrimônio',
+  CB:'Criatividade e Resolução com Escassez',
+  LI:'Liderança por Influência e Persuasão de Pares'
+};
+
+const sc = {}, nt = {};
+
+function pick(id, val, btn) {
+  sc[id] = val;
+  document.getElementById('card-'+id).classList.add('answered');
+  document.getElementById('card-'+id).querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  atualizar();
+}
+
+function atualizar() {
+  const n = Object.keys(sc).length;
+  document.getElementById('pgFill').style.width = Math.round(n/TOTAL*100)+'%';
+  document.getElementById('pgLabel').textContent = n+' / '+TOTAL;
+}
+
+function gerar() {
+  if (Object.keys(sc).length < TOTAL) {
+    document.getElementById('warn').classList.add('on');
+    return;
+  }
+  document.getElementById('warn').classList.remove('on');
+
+  // ── CÁLCULO usando matriz de conversão ──
+  const avgTech  = Math.round(TECH.reduce((a,k)=>a+PCT[sc[k]],0)/TECH.length);
+  const avgSoft  = Math.round(SOFT.reduce((a,k)=>a+PCT[sc[k]],0)/SOFT.length);
+  const avgTotal = Math.round(KEYS.reduce((a,k)=>a+PCT[sc[k]],0)/KEYS.length);
+
+  // ── VEREDITO conforme régua do documento ──
+  let vCor, vBg, vIcon, vLabel, vNome, vSub;
+  if (avgTotal >= 76) {
+    vCor='#3b82f6'; vBg='rgba(59,130,246,.08)'; vIcon='★';
+    vLabel='🔵 Perfil de Liderança'; vNome='APROVADO — Perfil de Alta Performance';
+    vSub='Domina a Gestão de Alta Proximidade. Indicado para avançar imediatamente.';
+  } else if (avgTotal >= 51) {
+    vCor='#22c55e'; vBg='rgba(34,197,94,.08)'; vIcon='✓';
+    vLabel='🟢 Desenvolvido'; vNome='APROVADO — Avançar com acompanhamento';
+    vSub='Executor autônomo e consistente. Pontos de atenção identificados abaixo.';
+  } else if (avgTotal >= 26) {
+    vCor='#eab308'; vBg='rgba(234,179,8,.08)'; vIcon='⚠';
+    vLabel='🟡 Em Desenvolvimento'; vNome='APROVADO COM RESSALVAS';
+    vSub='Execução superficial. Precisa de acompanhamento próximo e validação do CEO.';
+  } else {
+    vCor='#ef4444'; vBg='rgba(239,68,68,.08)'; vIcon='✕';
+    vLabel='🔴 Subdesenvolvido'; vNome='NÃO RECOMENDADO — Encerrar processo';
+    vSub='Gargalo crítico. Perfil abaixo do mínimo esperado para a vaga.';
+  }
+
+  // ── DETALHAMENTO por competência ──
+  const rowsTech = TECH.map(k=>row(k)).join('');
+  const rowsSoft = SOFT.map(k=>row(k)).join('');
+
+  // ── PONTOS POSITIVOS E ATENÇÕES ──
+  const pos=[], att=[];
+  KEYS.forEach(k => {
+    const s = sc[k];
+    if(s>=2) pos.push('<li><span>'+NOMES[k]+' — '+txtPos(k,s)+'</span></li>');
+    else     att.push('<li><span>'+NOMES[k]+' — '+txtAtt(k,s)+'</span></li>');
+  });
+  att.push('<li><span>Expectativa salarial: histórico de R$ 12–15k (fixo+variável) vs. oferta de R$ 3,5k fixo — alinhar antes de avançar.</span></li>');
+
+  // ── RECOMENDAÇÃO FINAL ──
+  const rec = avgTotal>=76
+    ? `<strong>Recomendação:</strong> Guilherme atingiu ${avgTotal}% de aproveitamento médio, configurando <strong>Perfil de Liderança</strong> conforme a régua do documento. Histórico sólido em Dell e OLX entrega a base técnica. <strong>Indicado para avançar imediatamente ao CEO e líder de vendas.</strong>`
+    : avgTotal>=51
+    ? `<strong>Recomendação:</strong> Aproveitamento de ${avgTotal}% — perfil <strong>Desenvolvido</strong>. Competência técnica consolidada, mas os pontos de atenção acima devem ser explorados na próxima etapa com o CEO. <strong>Avançar com pauta específica sobre os gaps.</strong>`
+    : avgTotal>=26
+    ? `<strong>Recomendação:</strong> Aproveitamento de ${avgTotal}% — perfil <strong>Em Desenvolvimento</strong>. As lacunas identificadas são relevantes para o escopo de liderança. <strong>Apresentar ressalvas ao CEO antes de avançar ou encerrar o processo.</strong>`
+    : `<strong>Recomendação:</strong> Aproveitamento de ${avgTotal}% — <strong>Subdesenvolvido</strong>. Gargalos críticos comprometem a entrega esperada. <strong>Processo encerrado.</strong>`;
+
+  document.getElementById('vbox').innerHTML = `
+    <div class="vtop" style="background:${vBg}">
+      <div class="vicon" style="background:${vBg};border:2px solid ${vCor};color:${vCor}">${vIcon}</div>
+      <div>
+        <div class="vlabel" style="color:${vCor}">${vLabel}</div>
+        <div class="vname" style="color:${vCor}">${vNome}</div>
+        <div class="vsub" style="color:${vCor}">${vSub}</div>
+      </div>
+    </div>
+    <div class="vscores">
+      <div class="vscore-block">
+        <span class="slabel">Técnicas (Hard Skills)</span>
+        <div class="srow">
+          <div class="sbar"><div class="sfill" style="width:${avgTech}%;background:#3b82f6;transition:width 1.2s ease"></div></div>
+          <span class="sval" style="color:#3b82f6">${avgTech}%</span>
+        </div>
+      </div>
+      <div class="vscore-block">
+        <span class="slabel">Comportamentais (Soft Skills)</span>
+        <div class="srow">
+          <div class="sbar"><div class="sfill" style="width:${avgSoft}%;background:#f97316;transition:width 1.2s ease"></div></div>
+          <span class="sval" style="color:#f97316">${avgSoft}%</span>
+        </div>
+      </div>
+      <div class="vscore-block">
+        <span class="slabel">Aproveitamento Global</span>
+        <div class="srow">
+          <div class="sbar"><div class="sfill" style="width:${avgTotal}%;background:${vCor};transition:width 1.2s ease"></div></div>
+          <span class="sval" style="color:${vCor}">${avgTotal}%</span>
+        </div>
+      </div>
+      <div class="vscore-block">
+        <span class="slabel">Régua de Veredito</span>
+        <div style="font-size:12px;color:#64748b;margin-top:6px;line-height:1.9">
+          🔵 76–100% · Perfil de Liderança<br>
+          🟢 51–75% · Desenvolvido (Aprovado)<br>
+          🟡 26–50% · Em Desenvolvimento<br>
+          🔴 10–25% · Subdesenvolvido
+        </div>
+      </div>
+    </div>
+    <div class="vdetail">
+      <h4>⚙ Detalhamento — Competências Técnicas</h4>${rowsTech}
+      <h4>◈ Detalhamento — Competências Comportamentais</h4>${rowsSoft}
+    </div>
+    <div class="vbody">
+      <div class="vblock positives">
+        <h4>✓ Pontos Positivos</h4>
+        <ul>${pos.length ? pos.join('') : '<li><span>Nenhum ponto positivo se destacou nesta avaliação.</span></li>'}</ul>
+      </div>
+      <div class="vblock attentions">
+        <h4>⚠ Pontos de Atenção</h4>
+        <ul>${att.join('')}</ul>
+      </div>
+    </div>
+    <div class="vrec">${rec}</div>
+  `;
+  document.getElementById('vbox').classList.add('on');
+  document.getElementById('vbox').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function row(k) {
+  const s=sc[k], p=PCT[s];
+  return `<div class="drow">
+    <span class="did">${k}</span>
+    <span class="dname">${NOMES[k]}</span>
+    <div class="dbar"><div class="dfill" style="width:${p}%;background:${SCOLOR[s]}"></div></div>
+    <span class="dpct" style="color:${SCOLOR[s]}">${p}%</span>
+    <span class="dstatus">${STATUS[s]}</span>
+  </div>`;
+}
+
+function txtPos(k,s) {
+  const m={
+    T1:{2:'Auditorias frequentes com controle consistente do pipeline.',3:'Gestão cirúrgica e analítica do funil com rituais diários rígidos.'},
+    T2:{2:'Micro-indicadores usados de forma estruturada para recalibrar a rota.',3:'Diagnóstico por micro-KPIs com reversão comprovada de resultado.'},
+    T3:{2:'Aplicação clara de metodologia com mapeamento de dores em ciclos curtos.',3:'Domínio técnico cirúrgico de metodologia — contorno de objeção em alta cadência.'},
+    T4:{2:'Agenda em blocos com cota diária de outbound mantida disciplinadamente.',3:'Esteira de intensidade com controle de conversão inbound e outbound ponta a ponta.'},
+    T5:{2:'Tangibilizou valor com foco em ROI, conectando dados a indicadores do cliente.',3:'Narrativa técnica de alta conversão conectando inteligência de dados a crescimento financeiro previsível.'},
+    C1:{2:'Liderança informal com análise de processo e direcionamento baseado em metas.',3:'Assumiu a engrenagem do time sem autoridade formal, ensinando o método e gerando resultado.'},
+    C2:{2:'Executou volume operacional desde o início para dominar produto e validar processo.',3:'Perfil hands-on comprovado — mergulhou na operação e construiu autoridade moral pelo resultado.'},
+    C3:{2:'Aplica rituais claros de organização em metas diárias com base em referência de disciplina.',3:'Referência vívida de cobrança convertida em rotina profissional de alta performance inegociável.'},
+    C4:{2:'Visão realista das diferenças entre grande empresa e startup, com disposição genuína.',3:'Alta consciência situacional com adaptação prévia comprovada e clareza sobre entrega em ambiguidade.'},
+    C5:{2:'Execução autônoma de oportunidade identificada, com resultado positivo comprovado.',3:'Iniciativa de alto impacto, execução independente e influência sobre pares com resultado mensurável.'},
+    C12:{2:'Memória de esforço e superação usada como combustível direto para bater metas.',3:'Motor de ambição inabalável moldado no passado — metas agressivas como único caminho aceitável.'},
+    C13:{2:'Maturidade e reorganização prática diante de crise pessoal, sem vitimização.',3:'Reação com foco cirúrgico, transformou caos em combustível e liderou pessoas ao redor na crise.'},
+    C14:{2:'Forte apego a princípios com palavra mantida e integridade nas entregas da operação.',3:'Senso de dever inegociável — integridade acima de qualquer facilidade ou ganho imediato.'},
+    C15:{2:'Histórico de dedicação e preparação para entregar resultado consistentemente acima da média.',3:'Mentalidade obsessiva por excelência com rotina intensa de bastidores e incômodo genuíno com a média.'},
+    C16:{2:'Capacidade estruturada de ensinar e acompanhar evolução de pares de forma organizada.',3:'Líder educador genuíno — gestão de alta proximidade, firmeza na cobrança e orgulho da transformação do outro.'},
+    C17:{2:'Metas claras de crescimento e decisões tomadas para aumentar remuneração via comissão.',3:'Ambição extrema e agressiva — comissionamento variável como único caminho, plano de vida exponencial.'},
+    C18:{2:'Patrimônio conquistado com esforço próprio e planejamento financeiro estruturado ao longo do tempo.',3:'Construção do zero com processo rigoroso de renúncia, foco obsessivo e disciplina de longo prazo.'},
+    CB:{2:'Proatividade para atingir objetivo com esforço próprio, sem depender de apoio externo.',3:'Visão sistêmica e senso de dono desde cedo — estratégia do zero executada com precisão e independência.'},
+    LI:{2:'Engajamento de pares com argumentos lógicos e bom relacionamento.',3:'Magnetismo prático natural — comunicação estratégica, leitura de pares e desarmamento de objeções com urgência.'},
+  };
+  return (m[k]&&m[k][s])||'Competência demonstrada de forma satisfatória.';
+}
+
+function txtAtt(k,s) {
+  const m={
+    T1:{0:'Não demonstrou comprometimento com integridade do CRM — dado tratado como secundário.',1:'Correções superficiais e espaçadas do funil, sem disciplina operacional no detalhe.'},
+    T2:{0:'Rejeição à análise de esforço — foco exclusivo na métrica macro, risco para cultura de microgerenciamento.',1:'Análise limitada à conversão final, sem mergulho em micro-indicadores de atividade diária.'},
+    T3:{0:'Vende puramente no feeling e carisma — sem metodologia estruturada aplicada.',1:'Aplicação intuitiva e isolada, sem clareza processual da metodologia.'},
+    T4:{0:'Abandona a prospecção fria ao receber leads prontos — risco de acomodação.',1:'Manteve dois canais sem disciplina de cadência ou métricas diárias de outbound.'},
+    T5:{0:'Pitch genérico sem conexão com dados técnicos ou indicadores de negócio do cliente.',1:'Argumentação de relacionamento em vez de projeção financeira de ROI.'},
+    C1:{0:'Omissão total frente a colega em dificuldade — foco exclusivo na meta individual.',1:'Apoio motivacional superficial sem auditoria de processo ou cobrança firme.'},
+    C2:{0:'Preferência por teoria antes de ir ao campo — risco para validação rápida do método.',1:'Início lento na operação, sem constância de volume para validar o processo comercial.'},
+    C3:{0:'Sem referência de disciplina rígida — pode resistir a cobranças estruturadas da operação.',1:'Prefere ritmo flexível — pode ser gargalo em ambiente de alta cadência e microgerenciamento.'},
+    C4:{0:'Romantiza startup ou demonstra dependência de estrutura corporativa de grande empresa.',1:'Reconhece diferenças mas não articula claramente o que exige de si mesmo no novo contexto.'},
+    C5:{0:'Sem iniciativa autônoma — aguarda direcionamento antes de agir.',1:'Dependência de validação antes de executar — pode travar em ambiente de startup.'},
+    C12:{0:'Relação passiva com conquistas financeiras — motor fraco para modelo de comissão variável.',1:'Busca estabilidade — pode se desengajar no período de rampagem com fixo baixo.'},
+    C13:{0:'Desaba emocionalmente diante de crises e depende de terceiros para se reerguer.',1:'Demora longa para reagir — desânimo pode contaminar a operação nos momentos difíceis.'},
+    C14:{0:'Indicativo de flexibilização de regras sob pressão — risco operacional e de cultura.',1:'Postura maleável com integridade — pode negligenciar dados por resultado imediato.'},
+    C15:{0:'Perfil acomodado — aceita a média sem incômodo genuíno com o segundo lugar.',1:'Gosta de vencer mas sem rotina comprovada de sacrifício ou intensidade nos bastidores.'},
+    C16:{0:'Nunca se envolveu com desenvolvimento de pessoas — risco crítico para papel de líder educador.',1:'Apoio motivacional raso — sem capacidade comprovada de desenvolvimento operacional estruturado.'},
+    C17:{0:'Metas financeiras tímidas — pode não suportar o período de rampagem com salário fixo baixo.',1:'Prefere ganho fixo previsível — baixa tolerância ao risco de remuneração variável agressiva.'},
+    C18:{0:'Sem construção de patrimônio próprio — pode indicar desorganização financeira ou falta de foco.',1:'Conquistas passivas ou com apoio externo — sem histórico claro de sacrifício e planejamento de longo prazo.'},
+    CB:{0:'Recua diante de condições adversas — baixa tolerância à escassez de recursos.',1:'Dependência de apoio externo para resolver problemas com falta de meios.'},
+    LI:{0:'Postura de seguidor — nunca buscou influenciar ou liderar pares voluntariamente.',1:'Recua ao primeiro sinal de rejeição — baixa persistência de persuasão e convencimento.'},
+  };
+  return (m[k]&&m[k][s])||'Competência abaixo do esperado para a vaga.';
+}
+
+function resetar() {
+  if (!confirm('Reiniciar toda a entrevista? Os dados serão perdidos.')) return;
+  KEYS.forEach(k=>delete sc[k]);
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.comp-card').forEach(c=>c.classList.remove('answered'));
+  document.querySelectorAll('.notes-input').forEach(t=>t.value='');
+  document.getElementById('pgFill').style.width='0%';
+  document.getElementById('pgLabel').textContent='0 / '+TOTAL;
+  document.getElementById('vbox').classList.remove('on');
+  document.getElementById('vbox').innerHTML='';
+  document.getElementById('warn').classList.remove('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// init
+document.getElementById('pgLabel').textContent = '0 / '+TOTAL;
+</script>
+</body>
+</html>
